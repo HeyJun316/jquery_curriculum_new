@@ -86,10 +86,11 @@
       });
       // 第4問  id='q4'の要素をクリックしたらこの要素の前後とこの要素内の前後にテキストを挿入せよ。
       $('#q4').click(function () {
-        $(this).prepend('DOMの中の前')
+        $(this)
+          .prepend('DOMの中の前')
           .append('DOMの中の後')
-          .before('DOMの後ろ')
-          .after('DOMの前')
+          .before('DOMの前')
+          .after('DOMの後ろ');
       });
       // <div class="question">
       //   before<div class="btn" id="q4">appendQ4prepend</div>after
@@ -115,7 +116,8 @@
       });
 
       // 第8問  id='q8'の要素をhoverしたらlargeというクラスを付与し、hoverが外れたら、クラスを削除せよ。
-       $('#q8').hover(function(){
+       $('#q8').hover(
+       function() {
          $(this).addClass('large');
        },
        function() {

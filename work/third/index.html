@@ -32,9 +32,10 @@
   <script>
     $(function () {
       $('.nav').find('li').click(function () {
-        var tab = $(this).index();
-        $('.contents').find('li').addClass('is-hidden');
-        $('.contents').find('li').eq(tab).removeClass('is-hidden');
+        var tabIndex = $(this).index();
+        $('.wrapper').find('li')
+        .addClass('is-hidden')
+        .eq(tabIndex).removeClass('is-hidden');
       });
     });
       // 今回やるのはタブメニューです。

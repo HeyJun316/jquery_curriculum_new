@@ -72,7 +72,9 @@
       $(function() {
         // $(function() { });　DOMが準備されてからjQueryを実行するおまじない。
         // jQueryを書くときはこの中に実際の処理を書くことになる。詳しくはこちら( http://www.jquerystudy.info/tutorial/01/06.html )
-        $('#q1').css('color', 'red');
+ <div class="question">
+    <div class="btn" id="q4">Q4</div>
+  </div>        $('#q1').css('color', 'red');
         // ちゃんと処理が実行されていれば<div id='q1'>q1</div>の文字色が赤色になっているはず。
         // $('#q1')　jQueryの効果を効かせたいDOMを$('')でくくる。
         // $('#q1')　この中の#q1の部分を「セレクタ」と呼ぶ。
@@ -158,7 +160,6 @@
         });
         // .eq() DOM要素の引数の値に等しい番号のDOMを指定する。
         // $(this).index()で取得された値（何番目）をeq()の引数に入れることによって、#q10と対応した#q11のDOMを取得出来る。
-        // ここまででjQueryでよく使う重要なメソッドはほぼほぼ抑えられたはずなのでこれ以降のカリキュラムに役立ててください。
       });
     </script>
   </body>
