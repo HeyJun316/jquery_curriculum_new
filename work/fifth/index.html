@@ -86,26 +86,24 @@
     <script>
       $(function() {
         $('.select').change(function(){
-          $(this).on('click', function(){
+          // $(this).on('click', function(){
             var val = $(this).val();
             // alert(val);
             // selectクラスを選択して変更した時に
             // 変数valにクリックしたselectクラスのvalが代入
             if( val == "all") {
-              $('.list li').each(function(){
-                $(this).show();
-              });
+              $('.list li').show();
               // もし、valがallだったら、listクラスのliが現れる
             } else {
-              $('.list li').each(function() {
-                if( val == $(this).data('category-type')) {
-                  $(this).show();
+              $('.list li').each(function(i, element) {
+                if( val == $(element).data('category-type')) {
+                  $(element).show();
                 } else {
-                  $(this).hide();
+                  $(element).hide();
                 }
               });
             }
-          });
+          // });
         });
       });
       // 今回やるのはソート機能です。
