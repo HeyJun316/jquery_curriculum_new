@@ -36,6 +36,12 @@
     $(function () {
       var inputText = '';
       var page = null;
+      // ↑(★)坂口さん3/18 2回目
+      // 1でも初期値としてOKだが、再代入してページの数が増えることを想定すると
+      // 1だと、再代入し終えた数字なのか初期値か見分けがつかないためnullにする。
+      // グローバルで箱を用意しておく
+
+      // 検索実行時の処理
       $('.search__btn').on('click', function () {
         searchClick();
       });
@@ -60,6 +66,13 @@
         getData();
       });
 
+      // bindメソッド公文だと、既にページ上にある要素に対してイベントが発生して
+      // 動的な要素（プログラムで後から追加された要素）には
+      // イベント発生時の処理を設定することができん
+      // 後から追加した要素にイベントを発生させる際にはdelegate構文を使う
+
+      // 関数
+      // ajaxでデータをとってくる
       function getData() {
         $.ajax({
           url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
@@ -73,6 +86,7 @@
             booksGenreId: '001'
           },
         }).done(function (data) {
+          // ↑非同期通信成功時にdataの中にサーバーから返されたデータが入ってる
           console.log(data);
           var noSearch = '検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。';
           if (data.pageCount === 0) {
@@ -88,10 +102,12 @@
         });
       };
 
-      // 関数
+      // データリスト
       function showData(data) {
         lists = '';
+        // ↑繰り返しリスト用のから配列(なければエラーを返される)
         $.each(data.Items, function (index, book_info) {
+          // ↑繰り返し処理(配列やハッシュver)
           lists += '<li class="lists__item">' +
             '<div class="lists__item__inner">' +
             ' <a href="" class="lists__item__link" target="_blank">' +
@@ -106,6 +122,7 @@
         $('.lists').append(lists);
       }
 
+      // ページネーション
       function pager(data) {
         var pageDisp = '<div class="pager" data-js="pager">' +
           '<div class="counter">' +
@@ -117,30 +134,42 @@
           '</div>' +
           '</div>';
         $('.lists').after(pageDisp);
-
+        // 前へボタン消す
         if (data.page === 1) {
           $('[data-js="page-prev"]')
             .addClass('disabled');
         };
+        // 最後のページで次へボタン消す
         if (data.page === data.pageCount) {
           $('[data-js="page-next"]')
             .addClass('disabled');
         };
       }
+      // キャンセル処理より後に、
+      // 別でクリックやタッチイベントを設定している為（再定義してしまっている）
+      // ×→.prop('disabled', true).css({ 'background-color': '#888', 'cursor': 'default' });
+      // ×→.addClass('disabled').prop('disabled', true);
 
+      // リロード
       function reload() {
         $('[data-js="pager"]').remove();
         $('.lists').empty();
         $('.message').empty();
       }
 
+      // 検索実行
       function searchClick() {
         inputText = $('[data-js="search-word"]').val();
         page = 1;
         reload();
         getData();
       }
+      // ↑(★)坂口さん3/18 2回目
+      // ここでもしvarでpageを変数定義すると、
+      // ローカル変数になるからgetDataで持っていけない。
+      // セレクタで指定した要素に、イベントが発生した時に実行するfunctionを設定する。
 
+      // エラー処理まとめ
       function errorList(jqXHR, textStatus, errorThrown) {
         var errorMessage = '';
         switch (jqXHR.status) {
@@ -166,7 +195,7 @@
             errormessage = '予期せぬエラーが発生しました。';
             break;
         }
-        $('.message').html('<p>' + errorMessage + '</p>');
+        $('.message').text(errorMessage);
       }
     });
       // NEXTクリック時の処理
