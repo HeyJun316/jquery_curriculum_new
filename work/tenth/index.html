@@ -156,7 +156,8 @@
         $('.lists').empty();
         $('.message').empty();
       }
-
+      // .lists要素自体をremoveで消すと、
+      // 検索時の.listsにafterメソでhtmlを追加できない
       // 検索実行
       function searchClick() {
         inputText = $('[data-js="search-word"]').val();
