@@ -48,7 +48,6 @@
 
       $(document).on('click', '[data-js="page-next"]', function (e) {
         e.preventDefault();
-        console.log(123);
         if ($(this).hasClass('disabled')) {
           return false;
         };
@@ -71,8 +70,6 @@
       // 動的な要素（プログラムで後から追加された要素）には
       // イベント発生時の処理を設定することができん
       // 後から追加した要素にイベントを発生させる際にはdelegate構文を使う
-      // return falseでfalseの場合そこで処理が終了するので、page/reload/getDataは
-      // 無効化される
 
       // 関数
       // ajaxでデータをとってくる
@@ -159,8 +156,7 @@
         $('.lists').empty();
         $('.message').empty();
       }
-      // .lists要素自体をremoveで消すと、
-      // 検索時の.listsにafterメソでhtmlを追加できない
+
       // 検索実行
       function searchClick() {
         inputText = $('[data-js="search-word"]').val();
