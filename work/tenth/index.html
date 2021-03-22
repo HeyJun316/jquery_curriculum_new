@@ -23,8 +23,13 @@
         </div>
         <button class="search__btn" data-js="search-btn">検索する</button>
       </div>
-      <div class="message"></div>
-      <ul class="lists"></ul>
+      <div class="message">
+
+      </div>
+      <ul class="lists">
+
+      </ul>
+
     </div>
 
 
@@ -48,14 +53,28 @@
 
       $(document).on('click', '[data-js="page-next"]', function (e) {
         e.preventDefault();
-        console.log(123);
         if ($(this).hasClass('disabled')) {
+          // クリックされた要素がthisに代入される
           return false;
         };
         page++
         reload();
         getData();
       });
+      // pagerで動的に追加された要素なのでclickメソッドだとイベントを追加できない
+      // documentとはwindowオブジェクトが持っているDOM要素(HTML)のオブジェクトの事
+      // widnowオブジェクトとはブラウザを操作するための機能集めたもの
+      // 第二引数に対してイベントを起こしたいセレクタを指定してあげて
+      //  doucumetオブジェクトを最初に持ってくる事で、Documentオブジェクトないで
+      // data-js~~を持っている値に対してclickトリガーが付与される
+      // functionにeventを追加する事で
+      //イベントハンドラーに渡されるeventオブジェクトのこと。
+      //イベントハンドラーで使用できるメソッドがある
+      // e.preventDefault()で規定の動作をキャンセルできるので、クリックしたaタグの動作をキャンセルする
+      // disbaleクラスを持ってるpage-nextに対して、aタグの挙動を向こうにしたい
+      // e.prevでaタグ押した時に上にいくのを消して、return falseでaタグを向こうにしてる
+      // イベントが起こるたびに調査する範囲（document=html全体）
+      // 実際に処理を行う対象にdata-js属性のpage-prevを持つものにしてる
 
       $(document).on('click', '[data-js="page-prev"]', function (e) {
         e.preventDefault();
@@ -72,45 +91,62 @@
       // イベント発生時の処理を設定することができん
       // 後から追加した要素にイベントを発生させる際にはdelegate構文を使う
       // return falseでfalseの場合そこで処理が終了するので、page/reload/getDataは
-      // 無効化される
+      // 無効化される　fdi
 
       // 関数
       // ajaxでデータをとってくる
       function getData() {
         $.ajax({
           url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
+          // リクエスト先のURL
           type: 'GET',
+          //新しくデータを取得するならPOST
+          // サーバー上の何かが変化するわけじゃないのでGET
           datatype: 'json',
+          // レスポンスで受け取ったデータがdatatypeの引数として返される
           data: {
+            // ajaxリクエスの内容
             applicationId: appId,
+            // アプリを特定する文字列
             keyword: inputText,
             hits: 20,
             page: page,
             booksGenreId: '001'
           },
+          // 指定した値がリクエスト時にサーバーに送信される
         }).done(function (data) {
-          // ↑非同期通信成功時にdataの中にサーバーから返されたデータが入ってる
+          // ↑非同期通信成功時にの中にサーバーから返されたデータが入ってる（レスポンスの情報）。情報が送られてきてるだけなので、引数名はなんでもOK
+          // textStatus→success!failとか, jqXHR詳しいオブジェクトが見れる
           console.log(data);
-          var noSearch = '検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。';
+          // console.log(textStatus);
+          // console.log(jqXHR);
           if (data.pageCount === 0) {
+            var noSearch = '検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。';
             $('.message').prepend(noSearch);
             // ↑0件時の処理
           } else {
-            reload();
             showData(data);
             pager(data);
           }
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-          errorList(jqXHR, textStatus, errorThrown);
+        }).fail(function (jqXHR) {
+          errorList(jqXHR);
+          console.log(jqXHR);
         });
       };
+      // リクエストの要求がなにかしら良くなかった際にfailにエラーをかえします
+      // 複雑なコードを簡略化
+      // APIを出してる会社が潰れた場合、アプリとかweb使えなくなる。
 
       // データリスト
       function showData(data) {
-        lists = '';
+        var lists = '';
         // ↑繰り返しリスト用のから配列(なければエラーを返される)
-        $.each(data.Items, function (index, book_info) {
-          // ↑繰り返し処理(配列やハッシュver)
+        $.each(data.Items, function (pro, book_info) {
+          // ↑繰り返し処理(オブジェクトver)
+          // メソッドの第一引数にはオブジェクト
+          //指定した複数あるオブジェクトを取得したい場合
+          // 引数にkeyとvalueを指定することで、オブジェクトをひとつひとつ取り出せる
+          //data.Itemsオブジェクト内のプロパティが取り出され、keyと値がGET
           lists += '<li class="lists__item">' +
             '<div class="lists__item__inner">' +
             ' <a href="" class="lists__item__link" target="_blank">' +
@@ -122,11 +158,13 @@
             '</div>' +
             "</li>";
         });
+        // console.log(book_info);
         $('.lists').append(lists);
       }
 
       // ページネーション
       function pager(data) {
+        // どういう状況？変数が。
         var pageDisp = '<div class="pager" data-js="pager">' +
           '<div class="counter">' +
           '<span class="counter-current">' + data.page + '</span>/<span class="counter-all">' + data.pageCount + '</span>' +
@@ -136,6 +174,7 @@
           '<a class="btn-item" data-js="page-next" href="#">次へ</a>' +
           '</div>' +
           '</div>';
+
         $('.lists').after(pageDisp);
         // 前へボタン消す
         if (data.page === 1) {
@@ -156,8 +195,12 @@
       // リロード
       function reload() {
         $('[data-js="pager"]').remove();
+        // ページャー自体を削除する
+        // emptyだとpagerに指定されているbordertopが残る
         $('.lists').empty();
+        // div.listsの要素内を削除(lists自体)
         $('.message').empty();
+        // div.messageの要素内を削除(messegae自体)
       }
       // .lists要素自体をremoveで消すと、
       // 検索時の.listsにafterメソでhtmlを追加できない
@@ -166,7 +209,9 @@
         inputText = $('[data-js="search-word"]').val();
         page = 1;
         reload();
+        // 179--getDataで取得したでーたや表示をリセットするため
         getData();
+
       }
       // ↑(★)坂口さん3/18 2回目
       // ここでもしvarでpageを変数定義すると、
@@ -174,7 +219,7 @@
       // セレクタで指定した要素に、イベントが発生した時に実行するfunctionを設定する。
 
       // エラー処理まとめ
-      function errorList(jqXHR, textStatus, errorThrown) {
+      function errorList(jqXHR) {
         var errorMessage = '';
         switch (jqXHR.status) {
           case 0:
@@ -202,6 +247,9 @@
         $('.message').text(errorMessage);
       }
     });
+    // switch文で引数に対象となる値が、
+    // いずれかのcase後の値と一致するかを調べ処理することができる
+    // defaultは初期値
       // NEXTクリック時の処理
       // // aタグ打ち消し+reloadして新しいデータ取得(★)坂口さん3/18 1回目
       // $(document).on('click', '[data-js="page-next"]', function (e) {
