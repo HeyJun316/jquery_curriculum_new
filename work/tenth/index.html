@@ -141,12 +141,15 @@
       function showData(data) {
         var lists = '';
         // ↑繰り返しリスト用のから配列(なければエラーを返される)
-        $.each(data.Items, function (pro, book_info) {
+        $.each(data.Items, function (index, book_info) {
           // ↑繰り返し処理(オブジェクトver)
-          // メソッドの第一引数にはオブジェクト
-          //指定した複数あるオブジェクトを取得したい場合
-          // 引数にkeyとvalueを指定することで、オブジェクトをひとつひとつ取り出せる
-          //data.Itemsオブジェクト内のプロパティが取り出され、keyと値がGET
+          // メソッドの第一引数にはオブジェクトでItemsまでの配列が取得できてる
+          // data.Items[0]がbook_infoに置き換わる
+          //
+          // 指定した複数あるオブジェクト を取得したい場合
+          // function引数にkeyとvalueを指定することで、
+          //
+          // data.Itemsプロパティが取り出され、keyと値がGET
           lists += '<li class="lists__item">' +
             '<div class="lists__item__inner">' +
             ' <a href="" class="lists__item__link" target="_blank">' +
